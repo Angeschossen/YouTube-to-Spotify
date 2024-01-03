@@ -49,16 +49,15 @@ async function setUserName() {
 }
 
 async function setupGit() {
-   changeDir(workingDir)
 
    if (!fs.existsSync(repoDir)) {
-
       console.log("Cloning repo...")
+      changeDir(repoBaseDir)
+
       return simpleGit()
          .clone(remote)
          .then(async () => {
             console.log('Cloning finished.');
-            changeDir(workingDir)
             await setUserName();
          })
          .catch((err) => {
