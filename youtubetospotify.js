@@ -40,8 +40,8 @@ function changeDir(dir) {
 async function setupGit() {
    changeDir(repoDir)
    await simpleGit()
-      .addConfig('user.name', 'Bibelgemeinde Videotechnik')
-      .addConfig('user.email', 'videotechnik@bibelgemeinde.de');
+      .addConfig('user.name', process.env.GIT_USERNAME)
+      .addConfig('user.email', process.env.GIT_EMAIL);
    changeDir(workingDir)
 
    if (!fs.existsSync(repoDir)) {
