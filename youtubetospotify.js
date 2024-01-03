@@ -124,7 +124,7 @@ async function notifyUserForNewEpisode() {
 
 async function checkVideos() {
    console.log(`Checking videos... ${new Date().toLocaleString()}`)
-   const buffer = readFileSync('./data.json');
+   const buffer = readFileSync('./youtube_data.json');
    let data = buffer.length > 0 ? JSON.parse(buffer) : {};
 
    const borderVideoId = data["borderVideoId"];
@@ -216,7 +216,7 @@ async function checkVideos() {
                await commitChanges();
                await pushCommits();
 
-               fs.writeFile('./data.json', JSON.stringify(data, null, 2), error => {
+               fs.writeFile('./youtube_data.json', JSON.stringify(data, null, 2), error => {
                   if (error) {
                      console.log('An error has occurred saving data', error);
                      return;
