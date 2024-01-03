@@ -118,7 +118,7 @@ async function checkIsVideoNotBroadcast(youtube, videoId) {
    return false;
 }
 
-async function notifyUserForNewEpisode(){
+async function notifyUserForNewEpisode() {
 
 }
 
@@ -258,4 +258,8 @@ async function setup() {
    await setupGit();
    await scheduleCronJob();
    console.log("Started.")
+}
+
+module.exports = {
+   setup: setup
 }
