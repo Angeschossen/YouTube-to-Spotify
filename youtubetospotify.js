@@ -40,21 +40,24 @@ function changeDir(dir) {
    cd.cd(dir);
 }
 
-async function setupGit() {
+async function setUserName() {
    changeDir(repoDir)
    await simpleGit()
       .addConfig('user.name', process.env.GIT_USERNAME)
       .addConfig('user.email', process.env.GIT_EMAIL);
    changeDir(workingDir)
-
+}
+async function setupGit() {
    if (!fs.existsSync(repoDir)) {
 
       console.log("Cloning repo...")
       return simpleGit()
          .clone(remote)
-         .then(() => {
+         .then(async () => {
             console.log('Cloning finished.');
             changeDir(workingDir)
+
+            await setUserName();
          })
          .catch((err) => {
             console.error('Cloning failed: ', err);
@@ -62,6 +65,7 @@ async function setupGit() {
          });
    } else {
       console.log("Git repo already exists.")
+      await setUserName();
    }
 }
 
