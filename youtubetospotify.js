@@ -253,11 +253,10 @@ async function scheduleCronJob() {
    console.log(`Cronjob scheduled. Next execution: ${new Date(cronMidnight.nextDate())}`)
 }
 
-async function setup() {
+export async function setup() {
    console.log("Starting...")
    await setupGit();
    await scheduleCronJob();
    console.log("Started.")
 }
 
-module.exports.setupYouTube = setup
