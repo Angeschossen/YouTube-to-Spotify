@@ -147,7 +147,7 @@ async function checkVideos() {
    // v3 of the blogger API, and using an API key to authenticate.
    const youtube = google.youtube({
       version: 'v3',
-      auth: 'AIzaSyCPO6DXqsAhc7wEfRNgwEFsCFAQxl1Trao'
+      auth: process.env.YOUTUBE_API_KEY
    });
 
    const params = {
@@ -245,7 +245,6 @@ async function scheduleCronJob() {
 
    await checkVideos();
 
-   // 0 */2 * * *
    cronMidnight = new CronJob('0 */2 * * *', async function () {
       await checkVideos()
    },
@@ -255,13 +254,9 @@ async function scheduleCronJob() {
    console.log(`Cronjob scheduled. Next execution: ${new Date(cronMidnight.nextDate())}`)
 }
 
-async function main() {
+async function setup() {
    console.log("Starting...")
    await setupGit();
    await scheduleCronJob();
    console.log("Started.")
 }
-
-await main()
-
-process.stdin.resume(); // dont exit
