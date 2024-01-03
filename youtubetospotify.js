@@ -238,7 +238,7 @@ async function checkVideos() {
 let cronMidnight;
 async function scheduleCronJob() {
    if (cronMidnight != undefined) {
-      console.log("Cron already scheduled.")
+      console.log("YouTube cronjob already scheduled.")
       return
    }
 
@@ -250,7 +250,7 @@ async function scheduleCronJob() {
       null,
       true);
 
-   console.log(`Cronjob scheduled. Next execution: ${new Date(cronMidnight.nextDate())}`)
+   console.log(`YouTube cronjob scheduled. Next execution: ${new Date(cronMidnight.nextDate())}`)
 }
 
 export async function setupYouTubeToSpotify() {
