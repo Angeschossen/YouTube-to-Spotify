@@ -253,7 +253,7 @@ async function scheduleCronJob() {
    console.log(`Cronjob scheduled. Next execution: ${new Date(cronMidnight.nextDate())}`)
 }
 
-export async function setup() {
+export async function setupYouTubeToSpotify() {
    console.log("Starting...")
    await setupGit();
    await scheduleCronJob();
