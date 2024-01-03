@@ -41,7 +41,7 @@ function changeDir(dir) {
 }
 
 async function setUserName() {
-   changeDir(repoBaseDir)
+   changeDir(repoDir)
    await simpleGit()
       .addConfig('user.name', process.env.GIT_USERNAME)
       .addConfig('user.email', process.env.GIT_EMAIL);
