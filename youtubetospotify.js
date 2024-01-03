@@ -48,6 +48,8 @@ async function setUserName() {
    changeDir(workingDir)
 }
 async function setupGit() {
+   changeDir(workingDir)
+
    if (!fs.existsSync(repoDir)) {
 
       console.log("Cloning repo...")
