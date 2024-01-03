@@ -41,12 +41,13 @@ function changeDir(dir) {
 }
 
 async function setUserName() {
-   changeDir(repoDir)
+   changeDir(repoBaseDir)
    await simpleGit()
       .addConfig('user.name', process.env.GIT_USERNAME)
       .addConfig('user.email', process.env.GIT_EMAIL);
    changeDir(workingDir)
 }
+
 async function setupGit() {
    changeDir(workingDir)
 
@@ -58,7 +59,6 @@ async function setupGit() {
          .then(async () => {
             console.log('Cloning finished.');
             changeDir(workingDir)
-
             await setUserName();
          })
          .catch((err) => {
