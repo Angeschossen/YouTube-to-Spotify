@@ -12,6 +12,8 @@ import { readFileSync } from 'node:fs'
 import process from 'process'
 import { CronJob } from 'cron'
 import dotenv from "dotenv"
+import events from "events"
+
 dotenv.config();
 
 // change current directory to repo directory in local
@@ -30,6 +32,8 @@ const PASS = `${process.env.REPO_PASSWORD}`;
 
 const remote = `https://${USER}:${PASS}@${REPO}`;
 const CHECK_INTERVAL = 3600;
+
+const em = new events.EventEmitter();
 
 function changeDir(dir) {
    console.log(`Changing working directory: ${dir}`)
@@ -222,6 +226,7 @@ async function checkVideos() {
                      return;
                   }
 
+                  em.emit('YouTubeVideoPushed', video)
                   console.log('Changes pushed and saved.');
                })
             });
