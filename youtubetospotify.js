@@ -12,7 +12,6 @@ import { readFileSync } from 'node:fs'
 import process from 'process'
 import { CronJob } from 'cron'
 import dotenv from "dotenv"
-
 dotenv.config();
 
 // change current directory to repo directory in local

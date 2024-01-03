@@ -3,7 +3,7 @@
   "displayName": "YouTube to Spotify",
   "version": "1.3.0",
   "type": "module",
-  "exports": "./app/index.js",
+  "exports": "./youtubetospotify.js",
   "engines": {
     "node": ">=16.0.0"
   },
