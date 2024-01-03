@@ -260,6 +260,4 @@ async function setup() {
    console.log("Started.")
 }
 
-module.exports = {
-   setup: setup
-}
+module.exports.setupYouTube = setup
