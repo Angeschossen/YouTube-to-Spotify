@@ -33,7 +33,7 @@ const PASS = `${process.env.REPO_PASSWORD}`;
 const remote = `https://${USER}:${PASS}@${REPO}`;
 const CHECK_INTERVAL = 3600;
 
-const em = new events.EventEmitter();
+export const eventEmitter = new events.EventEmitter();
 
 function changeDir(dir) {
    console.log(`Changing working directory: ${dir}`)
@@ -226,7 +226,7 @@ async function checkVideos() {
                      return;
                   }
 
-                  em.emit('YouTubeVideoPushed', video)
+                  eventEmitter.emit('YouTubeVideoPushed', video)
                   console.log('Changes pushed and saved.');
                })
             });
