@@ -142,7 +142,6 @@ async function checkVideos() {
       return
    }
 
-   let lastVideoId = data["lastVideoId"];
    let lastDate = new Date(data["date"] || null);
 
    const secs = (new Date() - lastDate) / 1000;
@@ -164,6 +163,8 @@ async function checkVideos() {
       maxResults: 20,
    };
 
+   let lastVideoId = data["lastVideoId"];
+
    // retrieve videos 
    youtube.playlistItems.list(params, async (err, res) => {
       if (err) {
@@ -171,6 +172,7 @@ async function checkVideos() {
          throw err;
       }
 
+      let lastFilteredVideo;
       let lastFiltered;
       const len = res.data.items.length;
       for (let i = 0; i < len; i++) {
@@ -206,8 +208,10 @@ async function checkVideos() {
                }
 
                lastVideoId = lastFiltered; // reached
+
             } else {
                lastVideoId = videoId; // reset
+               lastFilteredVideo = video;
             }
 
             console.log(`Pushing video ${lastVideoId} (${videoId}, ${lastFiltered})`)
@@ -231,7 +235,7 @@ async function checkVideos() {
                      return;
                   }
 
-                  eventEmitter.emit('YouTubeVideoPushed', video)
+                  eventEmitter.emit('YouTubeVideoPushed', lastFilteredVideo)
                   console.log('Changes pushed and saved.');
                })
             });
@@ -240,6 +244,7 @@ async function checkVideos() {
          } else {
             // go until we find last vid
             lastFiltered = videoId;
+            lastFilteredVideo = video;
          }
       }
    });
