@@ -199,8 +199,10 @@ async function checkVideos() {
             continue;
          }
 
+         console.log(`${lastVideoId == videoId} || ${borderVideoId == videoId} || ${i == (len - 1)}`)
          if ((lastVideoId == videoId || borderVideoId == videoId) || i == (len - 1)) { // reached end or need to reset end (for example if end video got deleted)
             // upload this video
+            console.log(`${lastVideoId == videoId} || ${borderVideoId == videoId}`)
             if (lastVideoId == videoId || borderVideoId == videoId) {
                if (lastFiltered == undefined) {
                   console.log(`No new video found. Index: ${i}`);
