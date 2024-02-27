@@ -131,6 +131,34 @@ async function notifyUserForNewEpisode() {
 
 }
 
+function pushVideo(videoId, videoData) {
+   console.log(`Pushing video ${videoId}`)
+
+   fs.writeFile(episodeFile, JSON.stringify({ "id": videoId }), async (error) => {
+      if (error) {
+         console.log('An error has occurred saving episode', error);
+         return;
+      }
+
+      await commitChanges();
+      await pushCommits();
+
+      fs.writeFile('./youtube_data.json', JSON.stringify({
+         date: new Date(),
+         lastVideoId: videoId
+      }, null, 2), error => {
+         if (error) {
+            console.log('An error has occurred saving data', error);
+            return;
+         }
+
+         eventEmitter.emit('YouTubeVideoPushed', videoData)
+         console.log('Changes pushed and saved.');
+      })
+   });
+
+}
+
 async function checkVideos() {
    console.log(`Checking videos... ${new Date().toLocaleString()}`)
    const buffer = readFileSync('./youtube_data.json');
@@ -163,7 +191,8 @@ async function checkVideos() {
       maxResults: 20,
    };
 
-   let lastVideoId = data["lastVideoId"];
+   const lastVideoConst = data["lastVideoId"];
+   let lastVideoId = lastVideoConst;
 
    // retrieve videos 
    youtube.playlistItems.list(params, async (err, res) => {
@@ -174,6 +203,8 @@ async function checkVideos() {
 
       let lastFilteredVideo;
       let lastFiltered;
+      let firstValid;
+      let foundLast = false;
       const len = res.data.items.length;
       for (let i = 0; i < len; i++) {
          const video = res.data.items[i];
@@ -199,10 +230,16 @@ async function checkVideos() {
             continue;
          }
 
-         console.log(`${lastVideoId == videoId} || ${borderVideoId == videoId} || ${i == (len - 1)}`)
+         if (firstValid == undefined) {
+            firstValid = i;
+         }
+
+         if (!foundLast && videoId == lastVideoConst) {
+            foundLast = true;
+         }
+
          if ((lastVideoId == videoId || borderVideoId == videoId) || i == (len - 1)) { // reached end or need to reset end (for example if end video got deleted)
             // upload this video
-            console.log(`${lastVideoId == videoId} || ${borderVideoId == videoId}`)
             if (lastVideoId == videoId || borderVideoId == videoId) {
                if (lastFiltered == undefined) {
                   console.log(`No new video found. Index: ${i}`);
@@ -216,38 +253,25 @@ async function checkVideos() {
                lastFilteredVideo = video;
             }
 
-            console.log(`Pushing video ${lastVideoId} (${videoId}, ${lastFiltered})`)
+            if (lastFilteredVideo == undefined) {
+               throw new Error("Last filteredVideo was undefined.");
+            }
 
-            lastDate = new Date();
-            data["date"] = lastDate;
-            data["lastVideoId"] = lastVideoId;
-
-            fs.writeFile(episodeFile, JSON.stringify({ "id": lastVideoId }), async (error) => {
-               if (error) {
-                  console.log('An error has occurred saving episode', error);
-                  return;
-               }
-
-               await commitChanges();
-               await pushCommits();
-
-               fs.writeFile('./youtube_data.json', JSON.stringify(data, null, 2), error => {
-                  if (error) {
-                     console.log('An error has occurred saving data', error);
-                     return;
-                  }
-
-                  eventEmitter.emit('YouTubeVideoPushed', lastFilteredVideo)
-                  console.log('Changes pushed and saved.');
-               })
-            });
-
-            break;
+            pushVideo(lastVideoId, lastFilteredVideo);
+            return;
          } else {
             // go until we find last vid
             lastFiltered = videoId;
             lastFilteredVideo = video;
          }
+      }
+
+      if (!foundLast && firstValid != undefined) {
+         const video = res.data.items[firstValid];
+         const snipped = video["snippet"]
+         const resourceId = snipped["resourceId"]
+         const videoId = resourceId["videoId"];
+         pushVideo(videoId, video);
       }
    });
 }
