@@ -131,7 +131,7 @@ async function notifyUserForNewEpisode() {
 
 }
 
-function pushVideo(videoId, videoData) {
+function pushVideo(videoId, videoData, borderVideoId) {
    console.log(`Pushing video ${videoId}`)
 
    fs.writeFile(episodeFile, JSON.stringify({ "id": videoId }), async (error) => {
@@ -145,7 +145,8 @@ function pushVideo(videoId, videoData) {
 
       fs.writeFile('./youtube_data.json', JSON.stringify({
          date: new Date(),
-         lastVideoId: videoId
+         lastVideoId: videoId,
+         borderVideoId: borderVideoId
       }, null, 2), error => {
          if (error) {
             console.log('An error has occurred saving data', error);
@@ -257,7 +258,7 @@ async function checkVideos() {
                throw new Error("Last filteredVideo was undefined.");
             }
 
-            pushVideo(lastVideoId, lastFilteredVideo);
+            pushVideo(lastVideoId, lastFilteredVideo, borderVideoId);
             return;
          } else {
             // go until we find last vid
@@ -272,7 +273,7 @@ async function checkVideos() {
          const snipped = video["snippet"]
          const resourceId = snipped["resourceId"]
          const videoId = resourceId["videoId"];
-         pushVideo(videoId, video);
+         pushVideo(videoId, video, borderVideoId);
       }
    });
 }
