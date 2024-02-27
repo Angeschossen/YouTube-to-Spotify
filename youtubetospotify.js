@@ -267,6 +267,7 @@ async function checkVideos() {
       }
 
       if (!foundLast && firstValid != undefined) {
+         console.log("Couldn't find last pushed video. Probably deleted or not public. Pushing last valid instead.")
          const video = res.data.items[firstValid];
          const snipped = video["snippet"]
          const resourceId = snipped["resourceId"]
