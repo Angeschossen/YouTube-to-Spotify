@@ -2,3 +2,8 @@
 RemoteRepo/
 node_modules/
 package-lock.json
+episode.mp3
+thumbnail.jpg
+episode.json
+.env copy
+youtube_data.json

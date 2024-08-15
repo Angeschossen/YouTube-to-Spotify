@@ -13,6 +13,7 @@
     "googleapis": "^129.0.0",
     "node-fetch": "^3.3.2",
     "shelljs": "^0.8.5",
-    "simple-git": "^3.21.0"
+    "simple-git": "^3.21.0",
+    "youtube-to-anchorfm": "github:Angeschossen/youtube-to-spotify-podcasters"
   }
 }

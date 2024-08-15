@@ -1,9 +1,5 @@
-// Simple-git without promise 
 import simpleGit from 'simple-git'
-// Shelljs package for running shell tasks optional
 import cd from 'shelljs'
-// Simple Git with Promise for handling success and failure
-// import {simpleGitPromise} from '@simple-git/promise'
 import fs from 'fs'
 import path from 'path'
 import { google } from 'googleapis'
@@ -18,11 +14,13 @@ dotenv.config();
 
 // change current directory to repo directory in local
 const workingDir = process.cwd();
-const REPO_NAME = `${process.env.REPO_NAME}`
+const REPO_NAME = process.env.REPO_NAME;
+const isLocalStrategy = process.env.STRATEGY === "LOCAL";
 
+console.log(`Working directory: ${workingDir} Local strategy: ${isLocalStrategy}`)
 const repoBaseDir = `${workingDir}${path.sep}RemoteRepo`
 const repoDir = `${repoBaseDir}${path.sep}${REPO_NAME}`
-const episodeFile = `${repoDir}${path.sep}episode.json`;
+const episodeFile = isLocalStrategy ? `${workingDir}${path.sep}/episode.json` : `${repoDir}${path.sep}episode.json`;
 
 // Repo name
 const REPO = `${process.env.REPO_URL}`;  //Repo name
@@ -132,7 +130,7 @@ async function notifyUserForNewEpisode() {
 }
 
 function pushVideo(videoId, videoData, borderVideoId) {
-   console.log(`Pushing video ${videoId}`)
+   console.log(`Pushing video ${videoId} - file: ${episodeFile}`)
 
    fs.writeFile(episodeFile, JSON.stringify({ "id": videoId }), async (error) => {
       if (error) {
@@ -140,8 +138,12 @@ function pushVideo(videoId, videoData, borderVideoId) {
          return;
       }
 
-      await commitChanges();
-      await pushCommits();
+      if (!isLocalStrategy) {
+         await commitChanges();
+         await pushCommits();
+      } else {
+         import("youtube-to-anchorfm/src/index.js");
+      }
 
       fs.writeFile('./youtube_data.json', JSON.stringify({
          date: new Date(),
@@ -297,9 +299,16 @@ async function scheduleCronJob() {
 }
 
 export async function setupYouTubeToSpotify() {
-   console.log("Starting...")
-   await setupGit();
+   console.log("Starting...");
+
+   if (!isLocalStrategy) {
+      await setupGit();
+   }
+
    await scheduleCronJob();
    console.log("Started.")
 }
 
+
+await setupYouTubeToSpotify();
+process.stdin.resume(); // dont exit
