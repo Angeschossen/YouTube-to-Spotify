@@ -9,7 +9,7 @@ import process from 'process'
 import { CronJob } from 'cron'
 import dotenv from "dotenv"
 import events from "events"
-const clearModule = require('clear-module');
+import clearModule from "clear-module"
 
 dotenv.config();
 
