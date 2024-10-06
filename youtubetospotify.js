@@ -9,6 +9,7 @@ import process from 'process'
 import { CronJob } from 'cron'
 import dotenv from "dotenv"
 import events from "events"
+const clearModule = require('clear-module');
 
 dotenv.config();
 
@@ -142,6 +143,7 @@ function pushVideo(videoId, videoData, borderVideoId) {
          await commitChanges();
          await pushCommits();
       } else {
+         clearModule("youtube-to-anchorfm/src/index.js"); // to trigger main at Y2S again
          import("youtube-to-anchorfm/src/index.js");
       }
 
@@ -299,16 +301,12 @@ async function scheduleCronJob() {
 }
 
 export async function setupYouTubeToSpotify() {
-   console.log("Starting...");
+   console.log("Starting YouTube to Spotify...");
 
    if (!isLocalStrategy) {
       await setupGit();
    }
 
    await scheduleCronJob();
-   console.log("Started.")
+   console.log("YouTube to Spotify Started.")
 }
-
-
-await setupYouTubeToSpotify();
-process.stdin.resume(); // dont exit
